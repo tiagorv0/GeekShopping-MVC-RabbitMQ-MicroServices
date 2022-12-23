@@ -1,6 +1,5 @@
 ﻿using GeekShopping.ProductApi.Data.ValueObjects;
 using GeekShopping.ProductApi.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeekShopping.ProductApi.Controllers
@@ -17,44 +16,44 @@ namespace GeekShopping.ProductApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> FindById(int id)
+        public async Task<IActionResult> FindByIdAsync(int id)
         {
-            var product = await _productRepository.FindById(id);
+            var product = await _productRepository.FindByIdAsync(id);
             if(product is null) return NotFound();
 
             return Ok(product);
         }
 
         [HttpGet]
-        public async Task<IActionResult> FindAll()
+        public async Task<IActionResult> FindAllAsync()
         {
-            var products = await _productRepository.FindAll();
+            var products = await _productRepository.FindAllAsync();
 
             return Ok(products);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ProductVO vo)
+        public async Task<IActionResult> CreateAsync([FromBody] ProductVO vo)
         {
             if (vo is null) return BadRequest();
 
-            var created = await _productRepository.Create(vo);
+            var created = await _productRepository.CreateAsync(vo);
             return Ok(created);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(ProductVO vo)
+        public async Task<IActionResult> UpdateAsync([FromBody] ProductVO vo)
         {
             if (vo is null) return BadRequest();
 
-            var updated = await _productRepository.Update(vo);
+            var updated = await _productRepository.UpdateAsync(vo);
             return Ok(updated);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var status = await _productRepository.Delete(id);
+            var status = await _productRepository.DeleteAsync(id);
             if (!status) return BadRequest();
             return Ok(status);
         }

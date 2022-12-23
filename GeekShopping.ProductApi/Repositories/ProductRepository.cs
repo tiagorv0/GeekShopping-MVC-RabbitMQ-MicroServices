@@ -17,7 +17,7 @@ namespace GeekShopping.ProductApi.Repositories
             _mapper = mapper;
         }
 
-        public async Task<ProductVO> Create(ProductVO vo)
+        public async Task<ProductVO> CreateAsync(ProductVO vo)
         {
             var product = _mapper.Map<Product>(vo);
             _context.Products.Add(product);
@@ -25,7 +25,7 @@ namespace GeekShopping.ProductApi.Repositories
             return _mapper.Map<ProductVO>(product);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
@@ -43,19 +43,19 @@ namespace GeekShopping.ProductApi.Repositories
             }
         }
 
-        public async Task<IEnumerable<ProductVO>> FindAll()
+        public async Task<IEnumerable<ProductVO>> FindAllAsync()
         {
             var products = await _context.Products.ToListAsync();
             return _mapper.Map<List<ProductVO>>(products);
         }
 
-        public async Task<ProductVO> FindById(int id)
+        public async Task<ProductVO> FindByIdAsync(int id)
         {
             var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
             return _mapper.Map<ProductVO>(product);
         }
 
-        public async Task<ProductVO> Update(ProductVO vo)
+        public async Task<ProductVO> UpdateAsync(ProductVO vo)
         {
             var product = _mapper.Map<Product>(vo);
             _context.Products.Update(product);

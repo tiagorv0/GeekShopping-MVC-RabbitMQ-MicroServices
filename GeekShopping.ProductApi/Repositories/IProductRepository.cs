@@ -4,10 +4,10 @@ namespace GeekShopping.ProductApi.Repositories
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<ProductVO>> FindAll();
-        Task<ProductVO> FindById(int id);
-        Task<ProductVO> Create(ProductVO vo);
-        Task<ProductVO> Update(ProductVO vo);
-        Task<bool> Delete(int id);
+        Task<IEnumerable<ProductVO>> FindAllAsync();
+        Task<ProductVO> FindByIdAsync(int id);
+        Task<ProductVO> CreateAsync(ProductVO vo);
+        Task<ProductVO> UpdateAsync(ProductVO vo);
+        Task<bool> DeleteAsync(int id);
     }
 }
