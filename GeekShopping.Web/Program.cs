@@ -15,7 +15,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = "Cookies";
-    options.DefaultChallengeScheme = "oidc"
+    options.DefaultChallengeScheme = "oidc";
 })
     .AddCookie("Cookies", c => c.ExpireTimeSpan= TimeSpan.FromMinutes(10))
     .AddOpenIdConnect("oidc", options =>
