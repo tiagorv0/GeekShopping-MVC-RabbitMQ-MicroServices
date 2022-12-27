@@ -1,6 +1,7 @@
 ﻿using GeekShopping.Web.Models;
 using GeekShopping.Web.Services.IServices;
 using GeekShopping.Web.Utils;
+using System.Net.Http.Headers;
 
 namespace GeekShopping.Web.Services
 {
@@ -43,7 +44,7 @@ namespace GeekShopping.Web.Services
 
         public async Task<ProductModel> FindProductById(int id, string token)
         {
-            SendTokenToHeader(token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetAsync($"{BasePath}/{id}");
             return await response.ReadContentAs<ProductModel>();
         }
@@ -58,7 +59,7 @@ namespace GeekShopping.Web.Services
         }
         private void SendTokenToHeader(string token)
         {
-            _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
     }
 }

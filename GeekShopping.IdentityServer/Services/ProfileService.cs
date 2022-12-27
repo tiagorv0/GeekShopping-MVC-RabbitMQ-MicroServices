@@ -55,12 +55,5 @@ namespace GeekShopping.IdentityServer.Services
             var user = await _user.FindByIdAsync(id);
             context.IsActive = user != null;
         }
-
-        private async Task<ApplicationUser> GetUser(IsActiveContext context)
-        {
-            var id = context.Subject.GetSubjectId();
-            var user = await _user.FindByIdAsync(id);
-            return user;
-        }
     }
 }

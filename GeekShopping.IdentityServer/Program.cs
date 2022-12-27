@@ -28,7 +28,8 @@ var builderIdentity = builder.Services.AddIdentityServer(options =>
 }).AddInMemoryIdentityResources(IdentityConfiguration.IdentityResources)
   .AddInMemoryApiScopes(IdentityConfiguration.ApiScopes)
   .AddInMemoryClients(IdentityConfiguration.Clients)
-  .AddAspNetIdentity<ApplicationUser>();
+  .AddAspNetIdentity<ApplicationUser>()
+  .AddProfileService<ProfileService>();
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
@@ -39,7 +40,7 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-var dbInitializer = app.Services.CreateScope().ServiceProvider.GetService<IDbInitializer>();
+var dbInitializer = app.Services.CreateScope().ServiceProvider.GetRequiredService<IDbInitializer>();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

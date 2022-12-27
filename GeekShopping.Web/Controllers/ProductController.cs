@@ -16,11 +16,9 @@ namespace GeekShopping.Web.Controllers
             _productService = productService;
         }
 
-        [Authorize]
         public async Task<IActionResult> ProductIndex()
         {
-            var token = await GetToken();
-            var products = await _productService.FindAllProducts(token);
+            var products = await _productService.FindAllProducts(string.Empty);
             return View(products);
         }
 
@@ -83,14 +81,14 @@ namespace GeekShopping.Web.Controllers
             var token = await GetToken();
             var response = await _productService.DeleteProduct(model.Id, token);
             if (response) return RedirectToAction(nameof(ProductIndex));
-
+            
 
             return View(model);
         }
 
-        private async Task<string?> GetToken()
+        private async Task<string> GetToken()
         {
-            return await HttpContext.GetTokenAsync("access-token");
+            return await HttpContext.GetTokenAsync("access_token");
         }
     }
 }
