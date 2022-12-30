@@ -18,7 +18,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 
-
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication("Bearer")
