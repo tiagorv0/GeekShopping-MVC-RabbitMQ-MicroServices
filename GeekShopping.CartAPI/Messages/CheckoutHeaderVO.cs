@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using GeekShopping.CartAPI.Data.ValueObjects;
 
-namespace GeekShopping.Web.Models
+namespace GeekShopping.CartAPI.Messages
 {
-    public class CartHeaderViewModel
+    public class CheckoutHeaderVO
     {
         public int Id { get; set; }
         public string UserId { get; set; }
@@ -18,5 +18,8 @@ namespace GeekShopping.Web.Models
         public string CardNumber { get; set; }
         public string CVV { get; set; }
         public string ExpiryMothYear { get; set; }
+
+        public int CartTotalItems { get; set; }
+        public IEnumerable<CartDetailVO> CartDetails { get; set; }
     }
 }

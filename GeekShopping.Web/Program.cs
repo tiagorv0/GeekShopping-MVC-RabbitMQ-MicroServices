@@ -16,17 +16,22 @@ builder.Services.AddHttpClient<ICartService, CartService>(client =>
     client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CartAPI"]);
 });
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient<ICouponService, CouponService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]);
+});
+
+builder.Services.AddControllersWithViews(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = "Cookies";
     options.DefaultChallengeScheme = "oidc";
 })
-    .AddCookie("Cookies", c => c.ExpireTimeSpan= TimeSpan.FromMinutes(10))
+    .AddCookie("Cookies", c => c.ExpireTimeSpan = TimeSpan.FromMinutes(10))
     .AddOpenIdConnect("oidc", options =>
     {
         options.Authority = builder.Configuration["ServiceUrls:IdentityServer"];
-        options.GetClaimsFromUserInfoEndpoint= true;
+        options.GetClaimsFromUserInfoEndpoint = true;
         options.ClientId = "geek_shopping";
         options.ClientSecret = "my_super_secrete";
         options.ResponseType = "code";
