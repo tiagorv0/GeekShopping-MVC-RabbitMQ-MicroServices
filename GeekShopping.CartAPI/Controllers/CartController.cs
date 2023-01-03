@@ -11,12 +11,14 @@ namespace GeekShopping.CartAPI.Controllers
     public class CartController : ControllerBase
     {
         private readonly ICartRepository _cartRepository;
+        private readonly ICouponRepository _couponRepository;
         private readonly IRabbitMQMessageSender _rabbitMQMessageSender;
 
-        public CartController(ICartRepository cartRepository, IRabbitMQMessageSender rabbitMQMessageSender)
+        public CartController(ICartRepository cartRepository, IRabbitMQMessageSender rabbitMQMessageSender, ICouponRepository couponRepository)
         {
             _cartRepository = cartRepository;
             _rabbitMQMessageSender = rabbitMQMessageSender;
+            _couponRepository = couponRepository;
         }
 
         [HttpGet("find-cart/{userId}")]
@@ -70,10 +72,18 @@ namespace GeekShopping.CartAPI.Controllers
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout(CheckoutHeaderVO vo)
         {
+            var token = Request.Headers["Authorization"];
+
             if(vo?.UserId == null) return BadRequest();
             var cart = await _cartRepository.FindCartByUserId(vo.UserId);
             if (cart == null) return NotFound();
 
+            if (!string.IsNullOrEmpty(vo.CouponCode))
+            {
+                var coupon = await _couponRepository.GetCouponByCouponCode(vo.CouponCode, token);
+                if (vo.DiscountAmount != coupon.DiscountAmount)
+                    return StatusCode(412);
+            }
             vo.CartDetails = cart.CartDetails;
             vo.DateTime = DateTime.Now;
 
