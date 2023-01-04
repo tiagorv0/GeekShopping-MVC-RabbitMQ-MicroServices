@@ -19,20 +19,16 @@ namespace GeekShopping.CartAPI.RabbitMQSender
             _password = "guest";
             _userName = "guest";
         }
+
         public void SendMessage(BaseMessage message, string queueName)
         {
-            var factory = new ConnectionFactory
+            if (ConnectionExists())
             {
-                HostName = _hostName,
-                Password = _password,
-                UserName = _userName,
-            };
-            _connection = factory.CreateConnection();
-
-            using var channel = _connection.CreateModel();
-            channel.QueueDeclare(queueName, false, false, false, null);
-            var body = GetMessageAsByteArray(message);
-            channel.BasicPublish("", queueName, null, body);
+                using var channel = _connection.CreateModel();
+                channel.QueueDeclare(queueName, false, false, false, null);
+                var body = GetMessageAsByteArray(message);
+                channel.BasicPublish("", queueName, null, body);
+            }
         }
 
         private byte[] GetMessageAsByteArray(BaseMessage message)
@@ -43,6 +39,34 @@ namespace GeekShopping.CartAPI.RabbitMQSender
             };
             var json = JsonSerializer.Serialize<CheckoutHeaderVO>((CheckoutHeaderVO)message, options);
             return Encoding.UTF8.GetBytes(json);
+        }
+
+        private void CreateConnection()
+        {
+            try
+            {
+                var factory = new ConnectionFactory
+                {
+                    HostName = _hostName,
+                    Password = _password,
+                    UserName = _userName,
+                };
+                _connection = factory.CreateConnection();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private bool ConnectionExists()
+        {
+            if (_connection != null)
+                return true;
+
+            CreateConnection();
+            return _connection != null;
         }
     }
 }

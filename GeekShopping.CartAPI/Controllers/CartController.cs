@@ -72,7 +72,7 @@ namespace GeekShopping.CartAPI.Controllers
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout(CheckoutHeaderVO vo)
         {
-            var token = Request.Headers["Authorization"];
+            var token = Request.Headers;
 
             if(vo?.UserId == null) return BadRequest();
             var cart = await _cartRepository.FindCartByUserId(vo.UserId);
@@ -80,7 +80,7 @@ namespace GeekShopping.CartAPI.Controllers
 
             if (!string.IsNullOrEmpty(vo.CouponCode))
             {
-                var coupon = await _couponRepository.GetCouponByCouponCode(vo.CouponCode, token);
+                var coupon = await _couponRepository.GetCouponByCouponCode(vo.CouponCode, token.Authorization);
                 if (vo.DiscountAmount != coupon.DiscountAmount)
                     return StatusCode(412);
             }
@@ -88,6 +88,8 @@ namespace GeekShopping.CartAPI.Controllers
             vo.DateTime = DateTime.Now;
 
             _rabbitMQMessageSender.SendMessage(vo, "checkoutqueue");
+
+            await _cartRepository.ClearCart(vo.UserId);
 
             return Ok(vo);
         }

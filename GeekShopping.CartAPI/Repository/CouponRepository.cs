@@ -1,5 +1,4 @@
 ﻿using GeekShopping.CartAPI.Data.ValueObjects;
-using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -16,7 +15,8 @@ namespace GeekShopping.CartAPI.Repository
 
         public async Task<CouponVO> GetCouponByCouponCode(string couponCode, string token)
         {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var tokenWithoutBearer = token.Replace("Bearer ", "");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenWithoutBearer);
             var response = await _client.GetAsync($"/api/v1/coupon/{couponCode}");
             var content = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != System.Net.HttpStatusCode.OK) 
